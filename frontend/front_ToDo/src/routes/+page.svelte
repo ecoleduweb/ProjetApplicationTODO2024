@@ -6,12 +6,32 @@
   let pageTitle = "To Do"; // Example page title
   let taskToAdd = "";
   let taskList = [];
+  let taskCompleted = [];
+
   function addTask() {
     if (taskToAdd.trim() !== "") {
       // Add a check to avoid adding empty tasks
       taskList = [...taskList, taskToAdd];
       taskToAdd = ""; // Clear the input field after adding the task
     }
+  }
+
+  function deleteTask(index, completed = false) {
+    if (completed) {
+      taskCompleted = taskCompleted.filter((task, i) => i !== index);
+    } else {
+      taskList = taskList.filter((task, i) => i !== index);
+    }
+  }
+
+  function updateTask(index) {
+    taskCompleted = [...taskCompleted, taskList[index]];
+    taskList = taskList.filter((task, i) => i !== index);
+  }
+
+  function revertTask(index) {
+    taskList = [...taskList, taskCompleted[index]];
+    taskCompleted = taskCompleted.filter((task, i) => i !== index);
   }
 </script>
 
@@ -44,13 +64,19 @@
     <ul>
       {#each taskList as task, index}
         <li class="list-task" key={index}>
-          <input type="checkbox" name={`task${index}`} id={`task${index}`} />
+          <input
+            type="checkbox"
+            name={`task${index}`}
+            id={`task${index}`}
+            on:click={() => updateTask(index)}
+          />
           <label for={`task${index}`}>{task}</label>
           <button
             type="button"
             class="fa fa-trash input-delete"
             name={`toDelete${index}`}
             id="delete"
+            on:click={() => deleteTask(index, false)}
           >
           </button>
         </li>
@@ -61,17 +87,26 @@
   <div class="task-completed">
     <h2>Tâche complété</h2>
     <ul class="list-group">
-      <!-- <li class="list-task">
-        <input type="checkbox" name="task1" id="task1" />
-        <label for="task1">Task 1</label>
-        <button
-          type="button"
-          class="fa fa-trash input-delete"
-          name="toDelete1"
-          id="delete"
-        >
-        </button>
-      </li> -->
+      {#each taskCompleted as task, index}
+        <li class="list-task" key={index}>
+          <input
+            type="checkbox"
+            name={`task${index}`}
+            id={`task${index}`}
+            checked
+            on:click={() => revertTask(index)}
+          />
+          <label for={`task${index}`}>{task}</label>
+          <button
+            type="button"
+            class="fa fa-trash input-delete"
+            name={`toDelete${index}`}
+            id="delete"
+            on:click={() => deleteTask(index, true)}
+          >
+          </button>
+        </li>
+      {/each}
     </ul>
   </div>
 </div>
