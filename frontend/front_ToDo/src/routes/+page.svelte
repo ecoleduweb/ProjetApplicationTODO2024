@@ -1,12 +1,13 @@
 <!-- Page.svelte -->
-<script>
+<script lang="ts">
   // Import any dependencies you need
+  import ToDo from "../Components/ToDo.svelte";
   // You can also define variables and functions here
 
   let pageTitle = "To Do"; // Example page title
-  let taskToAdd = "";
-  let taskList = [];
-  let taskCompleted = [];
+  let taskToAdd: string = "";
+  let taskList: string[] = [];
+  let taskCompleted: string[] = [];
 
   function addTask() {
     if (taskToAdd.trim() !== "") {
@@ -16,7 +17,12 @@
     }
   }
 
-  function deleteTask(index, completed = false) {
+  function revertTask(index: number) {
+    taskList = [...taskList, taskCompleted[index]];
+    taskCompleted = taskCompleted.filter((task, i) => i !== index);
+  }
+
+  function deleteTask(index: number, completed = false) {
     if (completed) {
       taskCompleted = taskCompleted.filter((task, i) => i !== index);
     } else {
@@ -24,19 +30,15 @@
     }
   }
 
-  function updateTask(index) {
+  function updateTask(index: number) {
     taskCompleted = [...taskCompleted, taskList[index]];
     taskList = taskList.filter((task, i) => i !== index);
-  }
-
-  function revertTask(index) {
-    taskList = [...taskList, taskCompleted[index]];
-    taskCompleted = taskCompleted.filter((task, i) => i !== index);
   }
 </script>
 
 <div class="page-container">
   <h1>{pageTitle}</h1>
+  <!-- Your existing HTML... -->
   <p>Page des ToDo en Svelte</p>
   <form action="">
     <div class="column-add">
@@ -58,57 +60,38 @@
       />
       <hr class="hor-line" />
     </div>
+    <div class="task-added">
+      <h2>Tâche à faire</h2>
+      <ul>
+        {#each taskList as task, index}
+          <ToDo
+            {task}
+            {index}
+            completed={false}
+            {deleteTask}
+            {updateTask}
+            {revertTask}
+          />
+        {/each}
+      </ul>
+      <hr class="hor-line" />
+    </div>
+    <div class="task-completed">
+      <h2>Tâche complété</h2>
+      <ul class="list-group">
+        {#each taskCompleted as task, index}
+          <ToDo
+            {task}
+            {index}
+            completed={true}
+            {deleteTask}
+            {updateTask}
+            {revertTask}
+          />
+        {/each}
+      </ul>
+    </div>
   </form>
-  <div class="task-added">
-    <h2>Tâche à faire</h2>
-    <ul>
-      {#each taskList as task, index}
-        <li class="list-task" key={index}>
-          <input
-            type="checkbox"
-            name={`task${index}`}
-            id={`task${index}`}
-            on:click={() => updateTask(index)}
-          />
-          <label for={`task${index}`}>{task}</label>
-          <button
-            type="button"
-            class="fa fa-trash input-delete"
-            name={`toDelete${index}`}
-            id="delete"
-            on:click={() => deleteTask(index, false)}
-          >
-          </button>
-        </li>
-      {/each}
-    </ul>
-    <hr class="hor-line" />
-  </div>
-  <div class="task-completed">
-    <h2>Tâche complété</h2>
-    <ul class="list-group">
-      {#each taskCompleted as task, index}
-        <li class="list-task" key={index}>
-          <input
-            type="checkbox"
-            name={`task${index}`}
-            id={`task${index}`}
-            checked
-            on:click={() => revertTask(index)}
-          />
-          <label for={`task${index}`}>{task}</label>
-          <button
-            type="button"
-            class="fa fa-trash input-delete"
-            name={`toDelete${index}`}
-            id="delete"
-            on:click={() => deleteTask(index, true)}
-          >
-          </button>
-        </li>
-      {/each}
-    </ul>
-  </div>
 </div>
 
 <style>
@@ -116,8 +99,7 @@
   h2 {
     font-family: Manrope-ExtraLight;
   }
-  p,
-  li {
+  p {
     font-family: Manrope-Regular;
   }
   /* Add your CSS styles here */
@@ -156,12 +138,6 @@
   }
   .input-button {
     width: 30%;
-  }
-  .list-task {
-    list-style-type: none;
-  }
-  .input-delete {
-    margin: 0.52vw;
   }
   .hor-line {
     width: 100%;
