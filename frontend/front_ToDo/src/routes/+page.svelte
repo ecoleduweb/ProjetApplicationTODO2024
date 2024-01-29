@@ -6,20 +6,17 @@
 
   let pageTitle = "To Do"; // Example page title
   let taskToAdd: string = "";
-  let taskList: string[] = [];
-  let taskCompleted: string[] = [];
+  let id = 0;
+  let taskList = [];
+  let taskCompleted = [];
 
   function addTask() {
     if (taskToAdd.trim() !== "") {
       // Add a check to avoid adding empty tasks
-      taskList = [...taskList, taskToAdd];
+      taskList = [...taskList, { task: taskToAdd, id: id, completed: false }];
+      id++;
       taskToAdd = ""; // Clear the input field after adding the task
     }
-  }
-
-  function revertTask(index: number) {
-    taskList = [...taskList, taskCompleted[index]];
-    taskCompleted = taskCompleted.filter((task, i) => i !== index);
   }
 
   function deleteTask(index: number, completed = false) {
@@ -30,9 +27,27 @@
     }
   }
 
-  function updateTask(index: number) {
-    taskCompleted = [...taskCompleted, taskList[index]];
-    taskList = taskList.filter((task, i) => i !== index);
+  function updateTask(taskId) {
+    const index = taskList.findIndex((task) => task.id === taskId);
+    console.log(index);
+
+    if (index !== -1) {
+      const updatedTask = taskList[index];
+      taskList = taskList.filter((task) => task.id !== taskId);
+      updatedTask.completed = !updatedTask.completed;
+      taskCompleted = [...taskCompleted, updatedTask];
+    } else {
+      const completedIndex = taskCompleted.findIndex(
+        (task) => task.id === taskId
+      );
+
+      if (completedIndex !== -1) {
+        const updatedCompletedTask = taskCompleted[completedIndex];
+        taskCompleted = taskCompleted.filter((task) => task.id !== taskId);
+        updatedCompletedTask.completed = !updatedCompletedTask.completed;
+        taskList = [...taskList, updatedCompletedTask];
+      }
+    }
   }
 </script>
 
@@ -64,14 +79,7 @@
       <h2>Tâche à faire</h2>
       <ul>
         {#each taskList as task, index}
-          <ToDo
-            {task}
-            {index}
-            completed={false}
-            {deleteTask}
-            {updateTask}
-            {revertTask}
-          />
+          <ToDo {task} {index} completed={false} {deleteTask} {updateTask} />
         {/each}
       </ul>
       <hr class="hor-line" />
@@ -80,14 +88,7 @@
       <h2>Tâche complété</h2>
       <ul class="list-group">
         {#each taskCompleted as task, index}
-          <ToDo
-            {task}
-            {index}
-            completed={true}
-            {deleteTask}
-            {updateTask}
-            {revertTask}
-          />
+          <ToDo {task} {index} completed={true} {deleteTask} {updateTask} />
         {/each}
       </ul>
     </div>

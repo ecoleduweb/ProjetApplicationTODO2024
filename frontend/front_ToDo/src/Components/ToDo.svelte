@@ -5,25 +5,24 @@
   export let completed;
   export let deleteTask;
   export let updateTask;
-  export let revertTask;
 </script>
 
 <li class="list-task">
   <input
     type="checkbox"
-    name={`task${index}`}
-    id={`task${index}`}
-    bind:checked={completed}
-    on:click={() => (completed ? revertTask(index) : updateTask(index))}
+    name={`task${task.id}`}
+    id={`task${task.id}`}
+    bind:checked={task.completed}
+    on:click={() => updateTask(task.id)}
   />
 
-  <label for={`task${index}`}>{task}</label>
+  <label for={`task${task.id}`}>{task.task}</label>
   <button
     type="button"
     class="fa fa-trash input-delete"
-    name={`toDelete${index}`}
+    name={`toDelete${task.id}`}
     id="delete"
-    on:click={() => deleteTask(index, completed)}
+    on:click={() => deleteTask(task.id, completed)}
   >
   </button>
 </li>
