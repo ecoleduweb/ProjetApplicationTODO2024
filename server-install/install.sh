@@ -4,6 +4,10 @@
 sudo apt-get update
 sudo apt-get upgrade -y
 
+#configure unattended updates
+sudo apt install unattended-upgrades apt-listchanges -y
+sudo dpkg-reconfigure -plow unattended-upgrades
+
 # Install Node.js
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
 source ~/.bashrc
@@ -16,4 +20,4 @@ nvm install v20.11.0
 # Install Python 3.12
 sudo apt install -y python3.12
 
-echo "Installation complete."
+sudo nano /etc/apt/apt.conf.d/50unattended-upgrades
