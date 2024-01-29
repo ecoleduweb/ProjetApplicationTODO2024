@@ -14,13 +14,11 @@
       // Add a check to avoid adding empty tasks
       taskList = [...taskList, { task: taskToAdd, id: id, completed: false }];
       id++;
-      console.log(taskList);
       taskToAdd = ""; // Clear the input field after adding the task
     }
   }
 
   function deleteTask(index, completed = false) {
-    console.log(index);
     if (completed) {
       taskCompleted = taskCompleted.filter((task, i) => i !== index);
     } else {
@@ -30,7 +28,6 @@
 
   function updateTask(taskId) {
     const index = taskList.findIndex((task) => task.id === taskId);
-    console.log(index);
 
     if (index !== -1) {
       const updatedTask = taskList[index];
