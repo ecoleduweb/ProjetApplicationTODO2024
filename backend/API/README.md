@@ -3,6 +3,7 @@
 ## Developing
 
 ### Prerequisites
+Se mettre dans le répertoire /API
 ```bash
 pip install flask
 pip install Flask-SQLAlchemy
