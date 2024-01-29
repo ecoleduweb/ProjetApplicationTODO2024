@@ -1,30 +1,31 @@
-class TodoService:
-    def __init__(self):
+from app import db
+from app.models import Todo
 
-        self.todos = [
-            {'id': 1, 'name': 'Todo 1'},
-            {'id': 2, 'name': 'Todo 2'},
-            {'id': 3, 'name': 'Todo 3'},
-            {'id': 4, 'name': 'Todo 4'},
-        ]
-    
+class TodoService:
     def getAllTodos(self):
-        return self.todos
+        todos = Todo.query.all()
+        return todos
     
     def addTodo(self, todo):
-        todo['id'] = len(self.todos) + 1
-        self.todos.append(todo)
-        return todo
+        new_todo = Todo(task=todo['task'], completed=0)
+        db.session.add(new_todo)
+        db.session.commit()
+        return new_todo
 
     def deleteTodo(self, todo_id):
-        for todo in self.todos:
-            if todo['id'] == todo_id:
-                self.todos.remove(todo)
-                return todo
+        todo = Todo.query.get(todo_id)
+        if todo:
+            db.session.delete(todo)
+            db.session.commit()
+            return todo
             
-    def updateTodo(self, todo_id, new_name):
-        for todo in self.todos:
-            if todo['id'] == todo_id:
-                todo['name'] = new_name
-                return todo
+    def updateTodo(self, todo):
+        oldtodo = Todo.query.get(todo['id'])
+        if oldtodo:
+            oldtodo.task = todo.get('task', oldtodo.task)
+            oldtodo.completed = todo.get('completed', oldtodo.completed)
+            db.session.commit()
+            return oldtodo  # Return the updated todo object
+
+
 
