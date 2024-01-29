@@ -5,18 +5,22 @@
 
   let pageTitle = "To Do"; // Example page title
   let taskToAdd = "";
+  let id = 0;
   let taskList = [];
   let taskCompleted = [];
 
   function addTask() {
     if (taskToAdd.trim() !== "") {
       // Add a check to avoid adding empty tasks
-      taskList = [...taskList, taskToAdd];
+      taskList = [...taskList, { task: taskToAdd, id: id, completed: false }];
+      id++;
+      console.log(taskList);
       taskToAdd = ""; // Clear the input field after adding the task
     }
   }
 
   function deleteTask(index, completed = false) {
+    console.log(index);
     if (completed) {
       taskCompleted = taskCompleted.filter((task, i) => i !== index);
     } else {
@@ -24,14 +28,25 @@
     }
   }
 
-  function updateTask(index) {
-    taskCompleted = [...taskCompleted, taskList[index]];
-    taskList = taskList.filter((task, i) => i !== index);
-  }
+  function updateTask(taskId) {
+    const index = taskList.findIndex((task) => task.id === taskId);
+    console.log(index);
 
-  function revertTask(index) {
-    taskList = [...taskList, taskCompleted[index]];
-    taskCompleted = taskCompleted.filter((task, i) => i !== index);
+    if (index !== -1) {
+      const updatedTask = taskList[index];
+      taskList = taskList.filter((task) => task.id !== taskId);
+      updatedTask.completed = !updatedTask.completed;
+      taskCompleted = [...taskCompleted, updatedTask];
+    } else {
+      const completedIndex = taskCompleted.findIndex((task) => task.id === taskId);
+
+      if (completedIndex !== -1) {
+        const updatedCompletedTask = taskCompleted[completedIndex];
+        taskCompleted = taskCompleted.filter((task) => task.id !== taskId);
+        updatedCompletedTask.completed = !updatedCompletedTask.completed;
+        taskList = [...taskList, updatedCompletedTask];
+      }
+    }
   }
 </script>
 
@@ -63,18 +78,19 @@
     <h2>Tâche à faire</h2>
     <ul>
       {#each taskList as task, index}
-        <li class="list-task" key={index}>
+        <li class="list-task" id={task.id}>
           <input
             type="checkbox"
-            name={`task${index}`}
-            id={`task${index}`}
-            on:click={() => updateTask(index)}
+            name={`task${task.id}`}
+            id={`task${task.id}`}
+            bind:checked={task.completed}
+            on:click={() => updateTask(task.id)}
           />
-          <label for={`task${index}`}>{task}</label>
+          <label for={`task${task.id}`}>{task.task}</label>
           <button
             type="button"
             class="fa fa-trash input-delete"
-            name={`toDelete${index}`}
+            name={`toDelete${task.id}`}
             id="delete"
             on:click={() => deleteTask(index, false)}
           >
@@ -88,19 +104,19 @@
     <h2>Tâche complété</h2>
     <ul class="list-group">
       {#each taskCompleted as task, index}
-        <li class="list-task" key={index}>
+        <li class="list-task" id={task.id}>
           <input
             type="checkbox"
-            name={`task${index}`}
-            id={`task${index}`}
-            checked
-            on:click={() => revertTask(index)}
+            name={`task${task.id}`}
+            id={`task${task.id}`}
+            bind:checked={task.completed}
+            on:click={() => updateTask(task.id)}
           />
-          <label for={`task${index}`}>{task}</label>
+          <label for={`task${task.id}`}>{task.task}</label>
           <button
             type="button"
             class="fa fa-trash input-delete"
-            name={`toDelete${index}`}
+            name={`toDelete${task.id}`}
             id="delete"
             on:click={() => deleteTask(index, true)}
           >
