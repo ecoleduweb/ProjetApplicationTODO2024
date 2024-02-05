@@ -11,6 +11,23 @@ pip install Flask-Migrate
 pip install mariadb
 pip install pymysql
 ```
+### Setting up the database (not required)
+```
+Créer la base de données avec ce script:
+
+CREATE DATABASE todo;
+USE todo;
+CREATE TABLE todo (
+    id int not null auto_increment,
+    task varchar(255) ,
+    completed boolean ,
+    primary key (id)
+);
+CREATE USER 'admin'@'localhost' IDENTIFIED BY 'admin';
+GRANT ALL PRIVILEGES ON todo.* TO 'admin'@'localhost';
+FLUSH PRIVILEGES;
+```
+
 ### in _init_.py
 ```
 +from flask_migrate import Migrate
