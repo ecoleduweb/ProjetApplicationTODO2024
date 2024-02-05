@@ -31,7 +31,6 @@ test('Ajouter des todos et les compléter', async ({ page }) => {
 
 
 
-
 test('Ajouter 5 todos', async ({ page }) => {
     await page.locator('#task').click();
 for(let i = 1; i < 6; i++) { // Remplacez 5 par le nombre de fois que vous voulez répéter le test
