@@ -21,7 +21,7 @@ nvm install v20.11.0
 sudo apt install -y python3.12
 
 # Install MariaDB
-sudo apt install mariadb-server
+sudo apt install mariadb-server -y
 
 # Enable firewall
 sudo ufw allow 22, 443, 5000
