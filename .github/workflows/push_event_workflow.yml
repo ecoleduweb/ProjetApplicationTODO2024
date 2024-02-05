@@ -15,6 +15,9 @@ jobs:
       
     - name : Install Packages 
       run : pip install pytest
+
+    - name : Install Flask 
+      run : pip install -r requirements.txt
       
     - name : Run tests 
       run :  python -m pytest
