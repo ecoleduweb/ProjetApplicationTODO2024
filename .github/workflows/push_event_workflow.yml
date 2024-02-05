@@ -21,6 +21,9 @@ jobs:
 
     - name : Install Flask-SQLAlchemy
       run : pip install -U Flask-SQLAlchemy
+
+    - name : Install PyMySQL
+      run : python3 -m pip install PyMySQL
       
     - name : Run tests 
       run :  python -m pytest
