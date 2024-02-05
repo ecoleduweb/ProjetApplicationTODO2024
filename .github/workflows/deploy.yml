@@ -16,7 +16,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME}}
           
           script:
-            mkdir dev_project
-            cd dev_project
+            mkdir test_dev_project
+            cd test_dev_project
             git clone -b dev git@github.com:ecoleduweb/ProjetApplicationTODO2024.git
             echo 'Deployment successful to DEV server'
