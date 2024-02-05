@@ -20,4 +20,11 @@ nvm install v20.11.0
 # Install Python 3.12
 sudo apt install -y python3.12
 
+# Install MariaDB
+sudo apt install mariadb-server
+
+# Enable firewall
+sudo ufw allow 22, 443, 5000
+sudo ufw enable
+
 sudo nano /etc/apt/apt.conf.d/50unattended-upgrades
