@@ -14,78 +14,75 @@
   onMount(async () => {
     const res = await fetch("http://localhost:3001/getAllTodos");
     const data = await res.json();
-    console.log(data);
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].completed) {
-        taskCompleted = [...taskCompleted, data[i].task];
+    for (let i = 0; i < data.todos.length; i++) {
+      if (data.todos[i].completed) {
+        taskCompleted = [...taskCompleted, data.todos[i]];
       } else {
-        taskList = [...taskList, data[i].task];
+        taskList = [...taskList, data.todos[i]];
+        console.log(data.todos[i].task);
       }
     }
   });
-  function addTask() {
+  async function addTask() {
     if (taskToAdd.trim() !== "") {
       // Add a check to avoid adding empty tasks
-      taskList = [...taskList, { task: taskToAdd, id: id, completed: false }];
-      id++;
-      onMount(async () => {
-        const res = await fetch("http://localhost:3001/addTodo", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ task: taskToAdd, completed: false }),
-        });
-        const data = await res.json();
-        console.log(data);
+      const res = await fetch("http://localhost:3001/addTodo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ task: taskToAdd, completed: false }),
       });
+      const data = await res.json();
+      console.log(data);
+      taskList = [
+        ...taskList,
+        { task: taskToAdd, id: data.todo.id, completed: false },
+      ];
+      id++;
       taskToAdd = ""; // Clear the input field after adding the task
+      console.log(taskList);
     }
   }
 
-  function deleteTask(index: number, completed = false) {
+  async function deleteTask(index: number, completed = false) {
     if (completed) {
       taskCompleted = taskCompleted.filter((task, i) => i !== index);
     } else {
       taskList = taskList.filter((task, i) => i !== index);
     }
-    onMount(async () => {
-      const res = await fetch("http://localhost:3001/deleteTodo/" + index, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data = await res.json();
-      console.log(data);
+    const res = await fetch("http://localhost:3001/deleteTodo/" + index, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
+    const data = await res.json();
+    console.log(data);
   }
 
-  function updateTask(taskId) {
+  async function updateTask(taskId) {
     const index = taskList.findIndex((task) => task.id === taskId);
-    console.log(index);
+    console.log(taskId);
 
     if (index !== -1) {
       const updatedTask = taskList[index];
       taskList = taskList.filter((task) => task.id !== taskId);
       updatedTask.completed = !updatedTask.completed;
       taskCompleted = [...taskCompleted, updatedTask];
-
-      onMount(async () => {
-        const res = await fetch("http://localhost:3001/updateTodo/", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            completed: updatedTask.completed,
-            id: taskId,
-            task: updatedTask.task,
-          }),
-        });
-        const data = await res.json();
-        console.log(data);
+      const res = await fetch("http://localhost:3001/updateTodo/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          completed: updatedTask.completed,
+          id: taskId,
+          task: updatedTask.task,
+        }),
       });
+      const data = await res.json();
+      console.log(data);
     } else {
       const completedIndex = taskCompleted.findIndex(
         (task) => task.id === taskId
