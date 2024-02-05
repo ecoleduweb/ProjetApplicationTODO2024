@@ -18,7 +18,7 @@ jobs:
       working-directory: qa-tests
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
-      working-directory: app
+      working-directory: qa-tests
     - name: Run Playwright tests
       run: npx playwright test
       working-directory: qa-tests
