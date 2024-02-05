@@ -19,4 +19,4 @@ jobs:
             mkdir test_dev_project
             cd test_dev_project
             git clone -b dev git@github.com:ecoleduweb/ProjetApplicationTODO2024.git
-            echo 'Deployment successful to DEV serve
+            echo 'Deployment successful to DEV serve'
