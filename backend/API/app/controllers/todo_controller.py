@@ -1,5 +1,7 @@
 from flask import jsonify, request
-from app import app, todo_service
+from app import app
+from app.services.todo_service import TodoService
+todo_service = TodoService()
 
 @app.route('/addTodo', methods=['POST'])
 def add_todo():
