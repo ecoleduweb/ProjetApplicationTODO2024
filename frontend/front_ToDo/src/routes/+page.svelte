@@ -3,6 +3,7 @@
   // Import any dependencies you need
   import ToDo from "../Components/ToDo.svelte";
   // You can also define variables and functions here
+  import { onMount } from "svelte";
 
   let pageTitle = "To Do"; // Example page title
   let taskToAdd: string = "";
@@ -10,11 +11,34 @@
   let taskList = [];
   let taskCompleted = [];
 
+  onMount(async () => {
+    const res = await fetch("http://localhost:3001/getAllTodos");
+    const data = await res.json();
+    console.log(data);
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].completed) {
+        taskCompleted = [...taskCompleted, data[i].task];
+      } else {
+        taskList = [...taskList, data[i].task];
+      }
+    }
+  });
   function addTask() {
     if (taskToAdd.trim() !== "") {
       // Add a check to avoid adding empty tasks
       taskList = [...taskList, { task: taskToAdd, id: id, completed: false }];
       id++;
+      onMount(async () => {
+        const res = await fetch("http://localhost:3001/addTodo", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ task: taskToAdd, completed: false }),
+        });
+        const data = await res.json();
+        console.log(data);
+      });
       taskToAdd = ""; // Clear the input field after adding the task
     }
   }
@@ -25,6 +49,16 @@
     } else {
       taskList = taskList.filter((task, i) => i !== index);
     }
+    onMount(async () => {
+      const res = await fetch("http://localhost:3001/deleteTodo/" + index, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      console.log(data);
+    });
   }
 
   function updateTask(taskId) {
@@ -36,6 +70,22 @@
       taskList = taskList.filter((task) => task.id !== taskId);
       updatedTask.completed = !updatedTask.completed;
       taskCompleted = [...taskCompleted, updatedTask];
+
+      onMount(async () => {
+        const res = await fetch("http://localhost:3001/updateTodo/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            completed: updatedTask.completed,
+            id: taskId,
+            task: updatedTask.task,
+          }),
+        });
+        const data = await res.json();
+        console.log(data);
+      });
     } else {
       const completedIndex = taskCompleted.findIndex(
         (task) => task.id === taskId
@@ -46,6 +96,22 @@
         taskCompleted = taskCompleted.filter((task) => task.id !== taskId);
         updatedCompletedTask.completed = !updatedCompletedTask.completed;
         taskList = [...taskList, updatedCompletedTask];
+
+        onMount(async () => {
+          const res = await fetch("http://localhost:3001/updateTodo/", {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              completed: updatedCompletedTask.completed,
+              id: taskId,
+              task: updatedCompletedTask.task,
+            }),
+          });
+          const data = await res.json();
+          console.log(data);
+        });
       }
     }
   }
