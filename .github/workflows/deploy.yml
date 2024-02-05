@@ -19,5 +19,5 @@ jobs:
             rm -r test_dev_project
             mkdir test_dev_project
             cd test_dev_project
-            git clone -b ${{ env.TEST}} https://github.com/ecoleduweb/ProjetApplicationTODO2024.git
+            git clone -b dev https://github.com/ecoleduweb/ProjetApplicationTODO2024.git
             echo 'Deployment successful to DEV server'
