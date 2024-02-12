@@ -1,22 +1,33 @@
-from app.repositories.todo_repo import TodoRepository
+from app.models import Todo
+from app import db
 
 class TodoService:
-    def __init__(self):
-        self.todo_repo = TodoRepository()
-
     def get_all_todos(self):
-        return self.todo_repo.get_all_todos()
+        return Todo.query.all()
 
-    def add_todo(self, todo):
-        return self.todo_repo.add_todo(todo['task'], completed=0)
+    def get_todo_by_id(self, todo_id):
+        return db.session.get(Todo, todo_id)
+
+    def add_todo(self, todo_data):
+        new_todo = Todo(**todo_data)
+        db.session.add(new_todo)
+        db.session.commit()
+        return new_todo
 
     def delete_todo(self, todo_id):
-        todo = self.todo_repo.get_todo_by_id(todo_id)
+        todo = db.session.get(Todo, todo_id)
         if todo:
-            self.todo_repo.delete_todo(todo)
+            db.session.delete(todo)
+            db.session.commit()
             return todo
+        return None
 
-    def update_todo(self, todo):
-        old_todo = self.todo_repo.get_todo_by_id(todo['id'])
-        if old_todo:
-            return self.todo_repo.update_todo(old_todo, task=todo.get('task'), completed=todo.get('completed'))
+    def update_todo(self, todo_data):
+        todo_id = todo_data.get('id')
+        todo = db.session.get(Todo, todo_id)
+        if todo:
+            todo.task = todo_data.get('task', todo.task)
+            todo.completed = todo_data.get('completed', todo.completed)
+            db.session.commit()
+            return todo
+        return None
