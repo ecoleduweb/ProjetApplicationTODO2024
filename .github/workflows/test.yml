@@ -28,10 +28,10 @@ jobs:
     - name: 'Create env file'
       run: |
               touch .env
-              echo API_ENDPOINT="https://xxx.execute-api.us-west-2.amazonaws.com" >> .env
-              echo API_KEY=${{ secrets.API_KEY }} >> .env
+              echo DATABASE_TEST_URL=${{ secrets.DATABASE_TEST_URL }} >> .env
+              echo DATABASE_DEV_URL=${{ secrets.DATABASE_DEV_URL }} >> .env
               cat .env
-      
+              
     - name : Run tests 
       run :  python -m pytest
 
