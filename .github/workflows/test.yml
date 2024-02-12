@@ -22,12 +22,25 @@ jobs:
 
     - name : Install Flask-SQLAlchemy
       run : pip install -U Flask-SQLAlchemy
+
+    - name : Install mariadb
+      run : pip install mariadb
+
+    - name : Install PyMySQL
+      run : python3 -m pip install PyMySQL
+
+    - name : Install Flask Cors
+      run : pip install flask cors
+
+    - name : Install Python-dotenv
+      run : pip install python-dotenv
+
+    - name : Install Virtual-Dotenv
+      run : pip install virtualenv
       
     - name : Install FlaskTesting
       run : pip install Flask-Testing
 
-    - name : Install PyMySQL
-      run : python3 -m pip install PyMySQL
     - name: 'Create env file'
       run: |
               touch .env
