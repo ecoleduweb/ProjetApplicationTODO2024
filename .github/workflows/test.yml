@@ -1,0 +1,58 @@
+
+name: Push Event Workflow
+
+on: push 
+
+jobs:
+  unit-testing:
+    runs-on: ubuntu-latest 
+    
+    steps:
+    - name : Checkout code
+      uses : actions/checkout@v2
+      
+    - name : Install python 
+      uses : actions/setup-python@v2
+      
+    - name : Install Packages 
+      run : pip install pytest
+
+    - name : Install Flask 
+      run : pip install Flask
+
+    - name : Install Flask-SQLAlchemy
+      run : pip install -U Flask-SQLAlchemy
+
+    - name : Install MariaDB Debug
+      run : sudo apt-get install libmariadb-dev
+
+    - name : Install mariadb
+      run : pip install mariadb
+
+    - name : Install PyMySQL
+      run : python3 -m pip install PyMySQL
+
+    - name : Install Flask Cors
+      run : pip install flask cors
+
+    - name : Install Python-dotenv
+      run : pip install python-dotenv
+
+    - name : Install Virtual-Dotenv
+      run : pip install virtualenv
+      
+    - name : Install FlaskTesting
+      run : pip install Flask-Testing
+
+    - name: 'Create env file'
+      run: |
+              touch .env
+              echo DATABASE_TEST_URL=${{ secrets.DATABASE_TEST_URL }} >> .env
+              echo DATABASE_DEV_URL=${{ secrets.DATABASE_DEV_URL }} >> .env
+              cat .env
+              
+    - name : Run tests 
+      run :  python -m pytest
+
+
+    
