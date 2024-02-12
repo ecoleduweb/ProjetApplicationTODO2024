@@ -1,0 +1,39 @@
+
+name: Push Event Workflow
+
+on: push 
+
+jobs:
+  unit-testing:
+    runs-on: ubuntu-latest 
+    
+    steps:
+    - name : Checkout code
+      uses : actions/checkout@v2
+      
+    - name : Install python 
+      uses : actions/setup-python@v2
+      
+    - name : Install Packages 
+      run : pip install pytest
+
+    - name : Install Flask 
+      run : pip install Flask
+
+    - name : Install Flask-SQLAlchemy
+      run : pip install -U Flask-SQLAlchemy
+
+    - name : Install PyMySQL
+      run : python3 -m pip install PyMySQL
+    - name: 'Create env file'
+      run: |
+              touch .env
+              echo API_ENDPOINT="https://xxx.execute-api.us-west-2.amazonaws.com" >> .env
+              echo API_KEY=${{ secrets.API_KEY }} >> .env
+              cat .env
+      
+    - name : Run tests 
+      run :  python -m pytest
+
+
+    
