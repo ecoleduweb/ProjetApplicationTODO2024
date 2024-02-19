@@ -21,7 +21,7 @@ from app.models import Todo
 class BaseTestCase(TestCase):
     def create_app(self):
         app.config['TEST'] = "true"
-        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("mysql://root:admin@144.126.220.39/todotest")
+        app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("mysql://root:admin@localhost/todotest")
         return app
 
     def setUp(self):
